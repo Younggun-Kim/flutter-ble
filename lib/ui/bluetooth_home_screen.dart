@@ -44,6 +44,14 @@ class BluetoothHomeScreen extends StatelessWidget {
                   },
                 ),
                 ElevatedButton(
+                  child: Text('자동연결'),
+                  onPressed: () {
+                    context.read<BluetoothHomeBloc>().add(
+                      BluetoothHomeEvent.autoConnected(),
+                    );
+                  },
+                ),
+                ElevatedButton(
                   child: Text('연결해제'),
                   onPressed: () {
                     context.read<BluetoothHomeBloc>().add(
@@ -51,7 +59,9 @@ class BluetoothHomeScreen extends StatelessWidget {
                     );
                   },
                 ),
-                Text('검색된 디바이스: ${state.scannedDevice?.platformName ?? ''}'),
+                Text(
+                  '검색된 디바이스: ${state.scannedDevice?.platformName ?? ''} - ${state.scannedDevice?.remoteId}',
+                ),
                 Text('연결된 디바이스: ${state.connectedDevice?.platformName ?? ''}'),
               ],
             ),

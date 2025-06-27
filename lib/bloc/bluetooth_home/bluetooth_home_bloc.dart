@@ -21,6 +21,7 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     on<_DeviceScanned>(_onDeviceScanned);
     on<_DeviceConnected>(_onDeviceConnected);
     on<_DeviceDisconnected>(_onDeviceDisconnected);
+    on<_DeviceAutoConnected>(_onDeviceAutoConnected);
   }
 
   StreamSubscription<BluetoothConnectionState>? _connectionState;
@@ -35,20 +36,13 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     _DeviceScanned event,
     Emitter<BluetoothHomeState> emit,
   ) async {
-    emit(state.copyWith(scannedDevice: event.device));
+    final device = event.device;
 
-    _connectionState?.cancel();
-    _connectionState = event.device.connectionState.listen((
-      BluetoothConnectionState state,
-    ) {
-      if (state == BluetoothConnectionState.connected) {
-        add(BluetoothHomeEvent.deviceConnected(event.device));
-      } else {
-        add(BluetoothHomeEvent.deviceConnected(null));
-      }
-    });
+    emit(state.copyWith(scannedDevice: device));
 
-    await event.device.connect(mtu: 512);
+    _subscribeToConnectionState(device);
+
+    await device.connect(mtu: 512);
   }
 
   Future<void> _onDeviceConnected(
@@ -57,21 +51,15 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
   ) async {
     final connectedDevice = event.device;
 
+    logger.i('Connected Device: $connectedDevice');
+
     emit(state.copyWith(connectedDevice: connectedDevice));
 
     if (connectedDevice == null) return;
 
     List<BluetoothService> services = await connectedDevice.discoverServices();
 
-    logger.i(services.map((service) => service.serviceUuid).join(', '));
-
-    var characteristics = services.last.characteristics;
-    for (BluetoothCharacteristic c in characteristics) {
-      if (c.properties.read) {
-        List<int> value = await c.read();
-        logger.f(c.uuid.toString() + ' : ' + value.toString());
-      }
-    }
+    logger.f('${await services.last.characteristics.last.read()}');
   }
 
   void _onDeviceDisconnected(
@@ -81,5 +69,37 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     _connectionState?.cancel();
     state.connectedDevice?.disconnect();
     emit(state.copyWith(connectedDevice: null));
+  }
+
+  void _onDeviceAutoConnected(
+    _DeviceAutoConnected event,
+    Emitter<BluetoothHomeState> emit,
+  ) async {
+    final careSendRemoteId = DeviceIdentifier('D0:2E:AB:BB:B5:27');
+    BluetoothDevice device = BluetoothDevice(remoteId: careSendRemoteId);
+
+    _subscribeToConnectionState(device);
+
+    await device.disconnect();
+    await device.connect(autoConnect: true, mtu: null);
+  }
+
+  void _subscribeToConnectionState(
+    BluetoothDevice device,
+  ) {
+    _connectionState?.cancel();
+    _connectionState = device.connectionState.listen((
+      BluetoothConnectionState state,
+    ) {
+      if (state == BluetoothConnectionState.connected) {
+        add(
+          BluetoothHomeEvent.deviceConnected(
+            FlutterBluePlus.connectedDevices.first,
+          ),
+        );
+      } else {
+        add(BluetoothHomeEvent.deviceConnected(null));
+      }
+    });
   }
 }

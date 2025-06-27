@@ -9,4 +9,5 @@ sealed class BluetoothHomeEvent with _$BluetoothHomeEvent {
     BluetoothDevice? device,
   ) = _DeviceConnected;
   const factory BluetoothHomeEvent.disconnected() = _DeviceDisconnected;
+  const factory BluetoothHomeEvent.autoConnected() = _DeviceAutoConnected;
 }
