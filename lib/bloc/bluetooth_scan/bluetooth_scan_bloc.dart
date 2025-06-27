@@ -23,12 +23,6 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     on<_ClearDevices>(_onClearDevices);
   }
 
-  @override
-  Future<void> close() async {
-    logger.f('BluetoothScanBloc closed');
-    await super.close();
-  }
-
   StreamSubscription<List<ScanResult>>? _scanSubscription;
 
   void _onScanStarted(
@@ -56,8 +50,7 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     FlutterBluePlus.cancelWhenScanComplete(_scanSubscription!);
 
     FlutterBluePlus.startScan(
-      // withNames: ['Glucose002'],
-      withNames: ['CareSens 1057'],
+      withNames: ['Glucose002'],
       timeout: Duration(seconds: 10),
     );
   }
