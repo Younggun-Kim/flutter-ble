@@ -31,10 +31,28 @@ class BluetoothHomeScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   child: Text('스캔하기'),
-                  onPressed: () {
-                    BluetoothScanDialog.showBottomSheet(context);
+                  onPressed: () async {
+                    final homeBloc = context.read<BluetoothHomeBloc>();
+                    final scannedDevice =
+                        await BluetoothScanDialog.showBottomSheet(context);
+
+                    if (scannedDevice == null) return;
+
+                    homeBloc.add(
+                      BluetoothHomeEvent.deviceScanned(scannedDevice),
+                    );
                   },
                 ),
+                ElevatedButton(
+                  child: Text('연결해제'),
+                  onPressed: () {
+                    context.read<BluetoothHomeBloc>().add(
+                      BluetoothHomeEvent.disconnected(),
+                    );
+                  },
+                ),
+                Text('검색된 디바이스: ${state.scannedDevice?.platformName ?? ''}'),
+                Text('연결된 디바이스: ${state.connectedDevice?.platformName ?? ''}'),
               ],
             ),
           ),

@@ -8,7 +8,4 @@ sealed class BluetoothScanEvent with _$BluetoothScanEvent {
     List<BluetoothDevice> devices,
   ) = _AddDevice;
   const factory BluetoothScanEvent.clearDevices() = _ClearDevices;
-  const factory BluetoothScanEvent.deviceSelected(
-    BluetoothDevice device,
-  ) = _DeviceSelected;
 }

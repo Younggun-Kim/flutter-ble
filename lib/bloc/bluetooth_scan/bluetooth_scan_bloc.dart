@@ -21,7 +21,6 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     on<_Disposed>(_onDisposed);
     on<_AddDevice>(_onAddDevice);
     on<_ClearDevices>(_onClearDevices);
-    on<_DeviceSelected>(_onDeviceSelected);
   }
 
   @override
@@ -31,7 +30,6 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
   }
 
   StreamSubscription<List<ScanResult>>? _scanSubscription;
-  StreamSubscription<BluetoothConnectionState>? _connectionState;
 
   void _onScanStarted(
     _ScanStarted event,
@@ -58,7 +56,8 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     FlutterBluePlus.cancelWhenScanComplete(_scanSubscription!);
 
     FlutterBluePlus.startScan(
-      withNames: ['Glucose002'],
+      // withNames: ['Glucose002'],
+      withNames: ['CareSens 1057'],
       timeout: Duration(seconds: 10),
     );
   }
@@ -68,7 +67,6 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     Emitter<BluetoothScanState> emit,
   ) {
     _scanSubscription?.cancel();
-    _connectionState?.cancel();
     FlutterBluePlus.stopScan();
   }
 
@@ -84,18 +82,5 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     Emitter<BluetoothScanState> emit,
   ) {
     emit(state.copyWith(devices: []));
-  }
-
-  void _onDeviceSelected(
-    _DeviceSelected event,
-    Emitter<BluetoothScanState> emit,
-  ) {
-    _connectionState = event.device.connectionState.listen((
-      BluetoothConnectionState state,
-    ) {
-      logger.i(state);
-    });
-
-    event.device.connect();
   }
 }
