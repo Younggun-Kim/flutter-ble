@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../utils/logger.dart';
-
 part 'bluetooth_scan_bloc.freezed.dart';
 part 'bluetooth_scan_event.dart';
 part 'bluetooth_scan_state.dart';
@@ -68,7 +66,14 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     _AddDevice event,
     Emitter<BluetoothScanState> emit,
   ) {
-    emit(state.copyWith(devices: [...state.devices, ...event.devices]));
+    emit(
+      state.copyWith(
+        devices: [
+          ...state.devices,
+          ...event.devices,
+        ],
+      ),
+    );
   }
 
   void _onClearDevices(

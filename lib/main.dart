@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ble/ui/ui.dart';
+import 'package:flutter_ble/presentation/presentation.dart';
 
-import 'bluetooth/bluetooth_manager.dart';
+import 'core/core.dart';
 
 void main() {
   BluetoothManager.init();

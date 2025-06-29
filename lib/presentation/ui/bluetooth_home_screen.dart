@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ble/bloc/bloc.dart';
-import 'package:flutter_ble/bluetooth/bluetooth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/core.dart';
+import '../bloc/bloc.dart';
 import 'bluetooth_scan_dialog.dart';
 
 class BluetoothHomeScreen extends StatelessWidget {

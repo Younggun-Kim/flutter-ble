@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
-import '../utils/logger.dart';
+import '../../utils/logger.dart';
 
 class BluetoothManager {
   static StreamSubscription? scanSubscription;

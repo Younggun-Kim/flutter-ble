@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../utils/logger.dart';
+import '../../../utils/logger.dart';
 
 part 'bluetooth_home_event.dart';
 
