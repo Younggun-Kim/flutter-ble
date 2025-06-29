@@ -25,10 +25,12 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
   }
 
   StreamSubscription<BluetoothConnectionState>? _connectionState;
+  StreamSubscription<BluetoothConnectionState>? _notifySubscription;
 
   @override
   close() async {
     _connectionState?.cancel();
+    _notifySubscription?.cancel();
     super.close();
   }
 
@@ -42,7 +44,11 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
 
     _subscribeToConnectionState(device);
 
+    device.mtu.listen((mtu) => logger.w(mtu));
+
     await device.connect(mtu: 512);
+
+    await device.requestMtu(512);
   }
 
   Future<void> _onDeviceConnected(
@@ -51,23 +57,32 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
   ) async {
     final connectedDevice = event.device;
 
-    logger.i('Connected Device: $connectedDevice');
-
     emit(state.copyWith(connectedDevice: connectedDevice));
 
     if (connectedDevice == null) return;
 
     List<BluetoothService> services = await connectedDevice.discoverServices();
 
-    logger.f('${await services.last.characteristics.last.read()}');
+    for (var service in services) {
+      for (var c in service.characteristics) {
+        /// notify: true라면 값을 스트림으로 수신받기 가능
+        /// peripheral기기의 character가 notify를 허용하고 있어야 한다.
+        if (c.properties.notify) {
+          c.setNotifyValue(true);
+          c.lastValueStream.listen((value) {
+            logger.i(value);
+          });
+        }
+      }
+    }
   }
 
   void _onDeviceDisconnected(
     _DeviceDisconnected event,
     Emitter<BluetoothHomeState> emit,
   ) {
-    _connectionState?.cancel();
     state.connectedDevice?.disconnect();
+    _connectionState?.cancel();
     emit(state.copyWith(connectedDevice: null));
   }
 
@@ -75,6 +90,7 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     _DeviceAutoConnected event,
     Emitter<BluetoothHomeState> emit,
   ) async {
+    /// 저장된 디바이스 정보를 가져오기
     final careSendRemoteId = DeviceIdentifier('D0:2E:AB:BB:B5:27');
     BluetoothDevice device = BluetoothDevice(remoteId: careSendRemoteId);
 

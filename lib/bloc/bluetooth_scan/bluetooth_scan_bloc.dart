@@ -51,6 +51,7 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
 
     FlutterBluePlus.startScan(
       withNames: ['Glucose002'],
+      // withNames: ['CareSens 1057'],
       timeout: Duration(seconds: 10),
     );
   }
