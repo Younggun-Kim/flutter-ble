@@ -7,5 +7,6 @@ abstract class BluetoothHomeState with _$BluetoothHomeState {
     @Default(false) bool isBluetoothConnected,
     DeviceEntity? scannedDevice,
     DeviceEntity? connectedDevice,
+    @Default([]) List<BluetoothService> services,
   }) = _BluetoothHomeState;
 }

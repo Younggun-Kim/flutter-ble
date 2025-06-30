@@ -1,4 +1,5 @@
 import 'package:flutter_ble/domain/domain.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 
 /// Bluetooth 연결 상태 확인 UseCase
@@ -25,7 +26,7 @@ abstract interface class BluetoothUseCase {
   Stream<bool> isConnected(DeviceEntity device);
 
   /// 등록된 서비스 조회
-  Future<void> discoverServices(DeviceEntity device);
+  Future<List<BluetoothService>> discoverServices(DeviceEntity device);
 }
 
 @Injectable(as: BluetoothUseCase)
@@ -88,7 +89,7 @@ class BluetoothUseCaseImpl implements BluetoothUseCase {
 
   /// 등록된 서비스 조회
   @override
-  Future<void> discoverServices(DeviceEntity device) async {
-    await bluetoothRepository.discoverServices(device: device);
+  Future<List<BluetoothService>> discoverServices(DeviceEntity device) async {
+    return await bluetoothRepository.discoverServices(device: device);
   }
 }

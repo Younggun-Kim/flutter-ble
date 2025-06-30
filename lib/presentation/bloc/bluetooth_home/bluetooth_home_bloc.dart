@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_ble/domain/domain.dart';
+import 'package:flutter_ble/utils/logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -28,6 +29,7 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     on<_DeviceConnected>(_onDeviceConnected);
     on<_DeviceDisconnected>(_onDeviceDisconnected);
     on<_DeviceAutoConnected>(_onDeviceAutoConnected);
+    on<_SetServices>(_onSetServices);
   }
 
   final BluetoothUseCase bluetoothUseCase;
@@ -88,7 +90,12 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
 
     if (connectedDevice == null) return;
 
-    await bluetoothUseCase.discoverServices(connectedDevice);
+    final List<BluetoothService> services = await bluetoothUseCase
+        .discoverServices(
+          connectedDevice,
+        );
+
+    add(_SetServices(services));
 
     // TODO: 조회한 서비스를 기반으로 stream 기반의 통신 연결하기
     // for (var service in services) {
@@ -140,6 +147,9 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
         add(BluetoothHomeEvent.deviceConnected(null));
       }
     });
-    ;
+  }
+
+  void _onSetServices(_SetServices event, Emitter<BluetoothHomeState> emit) {
+    emit(state.copyWith(services: event.services));
   }
 }

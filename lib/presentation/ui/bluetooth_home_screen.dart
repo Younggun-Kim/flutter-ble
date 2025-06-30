@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ble/domain/domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,6 +74,24 @@ class BluetoothHomeScreen extends StatelessWidget {
                   '검색된 디바이스: ${state.scannedDevice?.logStr}',
                 ),
                 Text('연결된 디바이스: ${state.connectedDevice?.logStr}'),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: state.services.length,
+                    itemBuilder: (context, index) {
+                      final service = state.services[index];
+                      return ListTile(
+                        title: Text('ServiceUUID - ${service.serviceUuid}'),
+                        subtitle: Text(
+                          'characterCount: ${service.characteristics.length}',
+                        ),
+                        trailing: ElevatedButton(
+                          child: Text('통신하기'),
+                          onPressed: () {},
+                        ),
+                      );
+                    },
+                  ),
+                ),
                 const SizedBox(height: 24),
               ],
             ),

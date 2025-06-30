@@ -1,3 +1,5 @@
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+
 import '../entity/entity.dart';
 
 abstract interface class BluetoothRepository {
@@ -28,5 +30,7 @@ abstract interface class BluetoothRepository {
   Stream<bool> isConnected({required DeviceEntity device});
 
   /// 등록된 서비스 조회
-  Future<void> discoverServices({required DeviceEntity device});
+  Future<List<BluetoothService>> discoverServices({
+    required DeviceEntity device,
+  });
 }

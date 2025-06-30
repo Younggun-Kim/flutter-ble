@@ -85,11 +85,13 @@ class BluetoothRepositoryImpl implements BluetoothRepository {
 
   /// 등록된 서비스 조회
   @override
-  Future<void> discoverServices({required DeviceEntity device}) async {
+  Future<List<BluetoothService>> discoverServices({
+    required DeviceEntity device,
+  }) async {
     final bluetoothDevice = BluetoothDevice(
       remoteId: DeviceIdentifier(device.remoteId),
     );
 
-    await bluetoothClient.discoverServices(device: bluetoothDevice);
+    return await bluetoothClient.discoverServices(device: bluetoothDevice);
   }
 }
