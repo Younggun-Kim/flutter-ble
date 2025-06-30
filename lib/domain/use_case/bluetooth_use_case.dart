@@ -6,6 +6,8 @@ import 'package:flutter_ble/domain/repository/repository.dart';
 abstract interface class BluetoothUseCase {
   /// 블루투스 권한 검사
   Stream<bool> hasPermission();
+
+  Future<void> turnOn();
 }
 
 @Injectable(as: BluetoothUseCase)
@@ -19,5 +21,10 @@ class BluetoothUseCaseImpl implements BluetoothUseCase {
   @override
   Stream<bool> hasPermission() {
     return bluetoothRepository.hasPermission();
+  }
+
+  @override
+  Future<void> turnOn() async {
+    return await bluetoothRepository.turnOn();
   }
 }

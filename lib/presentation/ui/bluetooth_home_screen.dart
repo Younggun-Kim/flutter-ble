@@ -26,13 +26,18 @@ class BluetoothHomeScreen extends StatelessWidget {
         builder: (context, state) => Scaffold(
           body: SizedBox.expand(
             child: Column(
+              spacing: 8,
               children: [
-                EndDrawerButton(
-                  onPressed: () {
-                    BluetoothManager.turnOn();
+                const SizedBox(height: 24),
+                Text('블루투스  현재 권한 권한 : ${state.hasBluetoothPermission}'),
+                ElevatedButton(
+                  child: Text('Turn On'),
+                  onPressed: () async {
+                    context.read<BluetoothHomeBloc>().add(
+                      BluetoothHomeEvent.turnOnPressed(),
+                    );
                   },
                 ),
-                Text('블루투스 권한 : ${state.hasBluetoothPermission}'),
                 ElevatedButton(
                   child: Text('스캔하기'),
                   onPressed: () async {
@@ -67,6 +72,7 @@ class BluetoothHomeScreen extends StatelessWidget {
                   '검색된 디바이스: ${state.scannedDevice?.platformName ?? ''} - ${state.scannedDevice?.remoteId}',
                 ),
                 Text('연결된 디바이스: ${state.connectedDevice?.platformName ?? ''}'),
+                const SizedBox(height: 24),
               ],
             ),
           ),

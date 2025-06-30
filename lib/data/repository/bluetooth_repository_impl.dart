@@ -13,4 +13,9 @@ class BluetoothRepositoryImpl implements BluetoothRepository {
   Stream<bool> hasPermission() {
     return bluetoothClient.hasPermission();
   }
+
+  @override
+  Future<void> turnOn() async {
+    return await bluetoothClient.turnOn();
+  }
 }

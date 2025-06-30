@@ -24,6 +24,7 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     required this.bluetoothUseCase,
   }) : super(const BluetoothHomeState()) {
     on<_Initialized>(_onInitialized);
+    on<_TurnOnPressed>(_onTurnOnPressed);
     on<_SetBluetoothPermission>(_onSetBluetoothPermission);
     on<_DeviceScanned>(_onDeviceScanned);
     on<_DeviceConnected>(_onDeviceConnected);
@@ -51,6 +52,13 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     _permissionSubscription ??= bluetoothUseCase.hasPermission().listen(
       (bool permission) => add(_SetBluetoothPermission(permission)),
     );
+  }
+
+  void _onTurnOnPressed(
+    _TurnOnPressed event,
+    Emitter<BluetoothHomeState> emit,
+  ) async {
+    await bluetoothUseCase.turnOn();
   }
 
   void _onSetBluetoothPermission(
