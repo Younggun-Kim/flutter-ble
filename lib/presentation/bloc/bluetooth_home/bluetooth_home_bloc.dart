@@ -6,8 +6,6 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../utils/logger.dart';
-
 part 'bluetooth_home_event.dart';
 
 part 'bluetooth_home_state.dart';
@@ -112,7 +110,12 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     Emitter<BluetoothHomeState> emit,
   ) {
     _connectionState?.cancel();
-    emit(state.copyWith(connectedDevice: null));
+
+    final device = state.connectedDevice;
+    if (device != null) {
+      bluetoothUseCase.disconnected(device);
+      emit(state.copyWith(connectedDevice: null));
+    }
   }
 
   void _onDeviceAutoConnected(
