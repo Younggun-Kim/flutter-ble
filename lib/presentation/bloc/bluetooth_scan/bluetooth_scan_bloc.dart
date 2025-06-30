@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_ble/domain/domain.dart';
 import 'package:flutter_ble/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -16,52 +17,40 @@ typedef BluetoothScanBlocBuilder =
 
 @injectable
 class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
-  BluetoothScanBloc() : super(const BluetoothScanState()) {
+  BluetoothScanBloc({
+    required this.bluetoothUseCase,
+  }) : super(const BluetoothScanState()) {
     on<_ScanStarted>(_onScanStarted);
     on<_Disposed>(_onDisposed);
     on<_AddDevice>(_onAddDevice);
     on<_ClearDevices>(_onClearDevices);
   }
 
-  StreamSubscription<List<ScanResult>>? _scanSubscription;
+  final BluetoothUseCase bluetoothUseCase;
+  StreamSubscription<DeviceEntity?>? _scanSubscription;
 
   void _onScanStarted(
     _ScanStarted event,
     Emitter<BluetoothScanState> emit,
   ) async {
-    FlutterBluePlus.stopScan();
+    Stream<DeviceEntity?> scanStream = await bluetoothUseCase.startScan();
 
-    _scanSubscription = FlutterBluePlus.onScanResults.listen(
-      (List<ScanResult> results) {
-        if (results.isNotEmpty) {
-          final r = results.last;
-          logger.i('Scan: ${r.device.remoteId} - ${r.device.platformName}');
-          add(_AddDevice([r.device]));
-        }
-      },
-      onError: (e) => logger.e(e),
-      onDone: () => logger.i('Scan Done!'),
-    );
+    _scanSubscription = scanStream.listen((DeviceEntity? device) {
+      if (device == null) return;
 
-    if (_scanSubscription == null) {
-      return;
-    }
+      add(_AddDevice(device));
+    });
 
+    /// TODO: BluetoothClient로 분리
     FlutterBluePlus.cancelWhenScanComplete(_scanSubscription!);
-
-    FlutterBluePlus.startScan(
-      withNames: ['Glucose002'],
-      // withNames: ['CareSens 1057'],
-      timeout: Duration(seconds: 10),
-    );
   }
 
   void _onDisposed(
     _Disposed event,
     Emitter<BluetoothScanState> emit,
-  ) {
+  ) async {
     _scanSubscription?.cancel();
-    FlutterBluePlus.stopScan();
+    await bluetoothUseCase.stopScan();
   }
 
   void _onAddDevice(
@@ -69,12 +58,7 @@ class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
     Emitter<BluetoothScanState> emit,
   ) {
     emit(
-      state.copyWith(
-        devices: [
-          ...state.devices,
-          ...event.devices,
-        ],
-      ),
+      state.copyWith(devices: [...state.devices, event.device]),
     );
   }
 

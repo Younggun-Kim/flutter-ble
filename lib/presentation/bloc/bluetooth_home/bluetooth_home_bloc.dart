@@ -76,46 +76,39 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
 
     emit(state.copyWith(scannedDevice: device));
 
-    _subscribeToConnectionState(device);
-
-    device.mtu.listen((mtu) => logger.w(mtu));
-
-    await device.connect(mtu: 512);
-
-    await device.requestMtu(512);
+    // await device.connect(mtu: 512);
   }
 
   Future<void> _onDeviceConnected(
     _DeviceConnected event,
     Emitter<BluetoothHomeState> emit,
   ) async {
-    final connectedDevice = event.device;
-
-    emit(state.copyWith(connectedDevice: connectedDevice));
-
-    if (connectedDevice == null) return;
-
-    List<BluetoothService> services = await connectedDevice.discoverServices();
-
-    for (var service in services) {
-      for (var c in service.characteristics) {
-        /// notify: true라면 값을 스트림으로 수신받기 가능
-        /// peripheral기기의 character가 notify를 허용하고 있어야 한다.
-        if (c.properties.notify) {
-          c.setNotifyValue(true);
-          c.lastValueStream.listen((value) {
-            logger.i(value);
-          });
-        }
-      }
-    }
+    // final connectedDevice = event.device;
+    //
+    // emit(state.copyWith(connectedDevice: connectedDevice));
+    //
+    // if (connectedDevice == null) return;
+    //
+    // List<BluetoothService> services = await connectedDevice.discoverServices();
+    //
+    // for (var service in services) {
+    //   for (var c in service.characteristics) {
+    //     /// notify: true라면 값을 스트림으로 수신받기 가능
+    //     /// peripheral기기의 character가 notify를 허용하고 있어야 한다.
+    //     if (c.properties.notify) {
+    //       c.setNotifyValue(true);
+    //       c.lastValueStream.listen((value) {
+    //         logger.i(value);
+    //       });
+    //     }
+    //   }
+    // }
   }
 
   void _onDeviceDisconnected(
     _DeviceDisconnected event,
     Emitter<BluetoothHomeState> emit,
   ) {
-    state.connectedDevice?.disconnect();
     _connectionState?.cancel();
     emit(state.copyWith(connectedDevice: null));
   }
@@ -137,19 +130,19 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
   void _subscribeToConnectionState(
     BluetoothDevice device,
   ) {
-    _connectionState?.cancel();
-    _connectionState = device.connectionState.listen((
-      BluetoothConnectionState state,
-    ) {
-      if (state == BluetoothConnectionState.connected) {
-        add(
-          BluetoothHomeEvent.deviceConnected(
-            FlutterBluePlus.connectedDevices.first,
-          ),
-        );
-      } else {
-        add(BluetoothHomeEvent.deviceConnected(null));
-      }
-    });
+    // _connectionState?.cancel();
+    // _connectionState = device.connectionState.listen((
+    //   BluetoothConnectionState state,
+    // ) {
+    //   if (state == BluetoothConnectionState.connected) {
+    //     add(
+    //       BluetoothHomeEvent.deviceConnected(
+    //         FlutterBluePlus.connectedDevices.first,
+    //       ),
+    //     );
+    //   } else {
+    //     add(BluetoothHomeEvent.deviceConnected(null));
+    //   }
+    // });
   }
 }

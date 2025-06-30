@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ble/domain/domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ble/core/core.dart';
 import 'package:flutter_ble/presentation/bloc/bloc.dart';
@@ -69,9 +70,9 @@ class BluetoothHomeScreen extends StatelessWidget {
                   },
                 ),
                 Text(
-                  '검색된 디바이스: ${state.scannedDevice?.platformName ?? ''} - ${state.scannedDevice?.remoteId}',
+                  '검색된 디바이스: ${state.scannedDevice?.logStr}',
                 ),
-                Text('연결된 디바이스: ${state.connectedDevice?.platformName ?? ''}'),
+                Text('연결된 디바이스: ${state.connectedDevice?.logStr}'),
                 const SizedBox(height: 24),
               ],
             ),

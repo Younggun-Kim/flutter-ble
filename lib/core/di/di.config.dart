@@ -15,7 +15,6 @@ import 'package:flutter_ble/data/service/bluetooth/bluetooth_client.dart'
     as _i213;
 import 'package:flutter_ble/data/service/service.dart' as _i459;
 import 'package:flutter_ble/domain/domain.dart' as _i346;
-import 'package:flutter_ble/domain/repository/repository.dart' as _i620;
 import 'package:flutter_ble/domain/use_case/bluetooth_use_case.dart' as _i832;
 import 'package:flutter_ble/presentation/bloc/bluetooth_home/bluetooth_home_bloc.dart'
     as _i859;
@@ -31,7 +30,6 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.factory<_i1012.BluetoothScanBloc>(() => _i1012.BluetoothScanBloc());
     gh.lazySingleton<_i213.BluetoothClient>(() => _i213.BluetoothClientImpl());
     gh.lazySingleton<_i346.BluetoothRepository>(
       () => _i492.BluetoothRepositoryImpl(
@@ -40,11 +38,16 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i832.BluetoothUseCase>(
       () => _i832.BluetoothUseCaseImpl(
-        bluetoothRepository: gh<_i620.BluetoothRepository>(),
+        bluetoothRepository: gh<_i346.BluetoothRepository>(),
       ),
     );
     gh.factory<_i859.BluetoothHomeBloc>(
       () => _i859.BluetoothHomeBloc(
+        bluetoothUseCase: gh<_i346.BluetoothUseCase>(),
+      ),
+    );
+    gh.factory<_i1012.BluetoothScanBloc>(
+      () => _i1012.BluetoothScanBloc(
         bluetoothUseCase: gh<_i346.BluetoothUseCase>(),
       ),
     );

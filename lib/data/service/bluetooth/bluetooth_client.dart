@@ -15,13 +15,16 @@ abstract interface class BluetoothClient {
   /// 사용자에게 블루투스를 켜도록 요청합니다.
   /// (iOS에서는 동작하지 않음)
   Future<void> turnOn();
+
+  Stream<List<ScanResult>> startScan();
+
+  Future<void> stopScan();
 }
 
 @LazySingleton(as: BluetoothClient)
 class BluetoothClientImpl implements BluetoothClient {
   @override
   Stream<bool> hasPermission() {
-    logger.i(FlutterBluePlus.adapterStateNow);
     return FlutterBluePlus.adapterState.map(
       (BluetoothAdapterState state) => state == BluetoothAdapterState.on,
     );
@@ -32,5 +35,22 @@ class BluetoothClientImpl implements BluetoothClient {
     if (!Platform.isAndroid) return;
 
     return await FlutterBluePlus.turnOn();
+  }
+
+  @override
+  Stream<List<ScanResult>> startScan() {
+    final stream = FlutterBluePlus.onScanResults;
+
+    FlutterBluePlus.startScan(
+      withNames: ['Glucose002'],
+      timeout: Duration(seconds: 10),
+    );
+
+    return stream;
+  }
+
+  @override
+  Future<void> stopScan() async {
+    await FlutterBluePlus.stopScan();
   }
 }

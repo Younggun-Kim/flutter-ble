@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ble/domain/domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
@@ -10,10 +11,10 @@ const double _displayedItemCount = 5;
 class BluetoothScanDialog extends StatelessWidget {
   const BluetoothScanDialog({super.key});
 
-  static Future<BluetoothDevice?> showBottomSheet(BuildContext context) {
+  static Future<DeviceEntity?> showBottomSheet(BuildContext context) {
     final bluetoothScanBloc = context.read<BluetoothScanBloc>();
 
-    return showModalBottomSheet<BluetoothDevice>(
+    return showModalBottomSheet<DeviceEntity>(
       context: context,
       builder: (BuildContext context) => BluetoothScanBlocProvider.value(
         value: bluetoothScanBloc
@@ -49,7 +50,7 @@ class BluetoothScanDialog extends StatelessWidget {
               final device = state.devices[index];
 
               return ListTile(
-                title: Text('${device.remoteId} - ${device.platformName}'),
+                title: Text('${device.remoteId} - ${device.deviceName}'),
                 dense: true,
                 onTap: () {
                   Navigator.maybePop(context, device);

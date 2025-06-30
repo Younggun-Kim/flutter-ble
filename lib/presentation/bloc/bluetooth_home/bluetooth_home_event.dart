@@ -8,10 +8,10 @@ sealed class BluetoothHomeEvent with _$BluetoothHomeEvent {
     bool hasPermission,
   ) = _SetBluetoothPermission;
   const factory BluetoothHomeEvent.deviceScanned(
-    BluetoothDevice device,
+    DeviceEntity device,
   ) = _DeviceScanned;
   const factory BluetoothHomeEvent.deviceConnected(
-    BluetoothDevice? device,
+    DeviceEntity? device,
   ) = _DeviceConnected;
   const factory BluetoothHomeEvent.disconnected() = _DeviceDisconnected;
   const factory BluetoothHomeEvent.autoConnected() = _DeviceAutoConnected;

@@ -1,6 +1,5 @@
+import 'package:flutter_ble/domain/domain.dart';
 import 'package:injectable/injectable.dart';
-
-import 'package:flutter_ble/domain/repository/repository.dart';
 
 /// Bluetooth 연결 상태 확인 UseCase
 abstract interface class BluetoothUseCase {
@@ -8,6 +7,10 @@ abstract interface class BluetoothUseCase {
   Stream<bool> hasPermission();
 
   Future<void> turnOn();
+
+  Future<Stream<DeviceEntity?>> startScan();
+
+  Future<void> stopScan();
 }
 
 @Injectable(as: BluetoothUseCase)
@@ -26,5 +29,17 @@ class BluetoothUseCaseImpl implements BluetoothUseCase {
   @override
   Future<void> turnOn() async {
     return await bluetoothRepository.turnOn();
+  }
+
+  @override
+  Future<Stream<DeviceEntity?>> startScan() async {
+    await stopScan();
+
+    return bluetoothRepository.startScan();
+  }
+
+  @override
+  Future<void> stopScan() {
+    return bluetoothRepository.stopScan();
   }
 }
