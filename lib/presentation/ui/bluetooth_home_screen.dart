@@ -13,7 +13,10 @@ class BluetoothHomeScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BluetoothHomeBlocProvider(
-          create: (context) => getIt<BluetoothHomeBloc>(),
+          create: (context) => getIt<BluetoothHomeBloc>()
+            ..add(
+              BluetoothHomeEvent.initialized(),
+            ),
         ),
         BluetoothScanBlocProvider(
           create: (context) => getIt<BluetoothScanBloc>(),
@@ -29,6 +32,7 @@ class BluetoothHomeScreen extends StatelessWidget {
                     BluetoothManager.turnOn();
                   },
                 ),
+                Text('블루투스 권한 : ${state.hasBluetoothPermission}'),
                 ElevatedButton(
                   child: Text('스캔하기'),
                   onPressed: () async {

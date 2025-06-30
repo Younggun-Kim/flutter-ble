@@ -1,1 +1,3 @@
-abstract interface class BluetoothRepository {}
+abstract interface class BluetoothRepository {
+  Stream<bool> hasPermission();
+}

@@ -2,6 +2,10 @@ part of 'bluetooth_home_bloc.dart';
 
 @freezed
 sealed class BluetoothHomeEvent with _$BluetoothHomeEvent {
+  const factory BluetoothHomeEvent.initialized() = _Initialized;
+  const factory BluetoothHomeEvent.setBluetoothPermission(
+    bool hasPermission,
+  ) = _SetBluetoothPermission;
   const factory BluetoothHomeEvent.deviceScanned(
     BluetoothDevice device,
   ) = _DeviceScanned;

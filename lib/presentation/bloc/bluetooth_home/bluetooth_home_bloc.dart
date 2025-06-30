@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_ble/domain/domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -19,21 +20,44 @@ typedef BluetoothHomeBlocBuilder =
 
 @injectable
 class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
-  BluetoothHomeBloc() : super(const BluetoothHomeState()) {
+  BluetoothHomeBloc({
+    required this.bluetoothUseCase,
+  }) : super(const BluetoothHomeState()) {
+    on<_Initialized>(_onInitialized);
+    on<_SetBluetoothPermission>(_onSetBluetoothPermission);
     on<_DeviceScanned>(_onDeviceScanned);
     on<_DeviceConnected>(_onDeviceConnected);
     on<_DeviceDisconnected>(_onDeviceDisconnected);
     on<_DeviceAutoConnected>(_onDeviceAutoConnected);
   }
 
+  final BluetoothUseCase bluetoothUseCase;
+  StreamSubscription<bool>? _permissionSubscription;
   StreamSubscription<BluetoothConnectionState>? _connectionState;
   StreamSubscription<BluetoothConnectionState>? _notifySubscription;
 
   @override
   close() async {
+    _permissionSubscription?.cancel();
     _connectionState?.cancel();
     _notifySubscription?.cancel();
     super.close();
+  }
+
+  void _onInitialized(
+    _Initialized event,
+    Emitter<BluetoothHomeState> emit,
+  ) async {
+    _permissionSubscription ??= bluetoothUseCase.hasPermission().listen(
+      (bool permission) => add(_SetBluetoothPermission(permission)),
+    );
+  }
+
+  void _onSetBluetoothPermission(
+    _SetBluetoothPermission event,
+    Emitter<BluetoothHomeState> emit,
+  ) {
+    emit(state.copyWith(hasBluetoothPermission: event.hasPermission));
   }
 
   Future<void> _onDeviceScanned(
