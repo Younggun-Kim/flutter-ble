@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ble/core/core.dart';
+import 'package:flutter_ble/presentation/bloc/bloc.dart';
 
-import '../../core/core.dart';
-import '../bloc/bloc.dart';
 import 'bluetooth_scan_dialog.dart';
 
 class BluetoothHomeScreen extends StatelessWidget {
@@ -13,10 +13,10 @@ class BluetoothHomeScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BluetoothHomeBlocProvider(
-          create: (context) => BluetoothHomeBloc(),
+          create: (context) => getIt<BluetoothHomeBloc>(),
         ),
         BluetoothScanBlocProvider(
-          create: (context) => BluetoothScanBloc(),
+          create: (context) => getIt<BluetoothScanBloc>(),
         ),
       ],
       child: BluetoothHomeBlocBuilder(

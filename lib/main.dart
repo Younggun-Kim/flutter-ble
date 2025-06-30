@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ble/core/di/di.dart';
 import 'package:flutter_ble/presentation/presentation.dart';
 
 import 'core/core.dart';
 
 void main() {
   BluetoothManager.init();
+
+  configureDependencies();
 
   runApp(
     MaterialApp(

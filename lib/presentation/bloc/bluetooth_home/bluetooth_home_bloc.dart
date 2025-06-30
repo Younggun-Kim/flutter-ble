@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../utils/logger.dart';
 
@@ -16,6 +17,7 @@ typedef BluetoothHomeBlocProvider = BlocProvider<BluetoothHomeBloc>;
 typedef BluetoothHomeBlocBuilder =
     BlocBuilder<BluetoothHomeBloc, BluetoothHomeState>;
 
+@injectable
 class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
   BluetoothHomeBloc() : super(const BluetoothHomeState()) {
     on<_DeviceScanned>(_onDeviceScanned);

@@ -10,11 +10,24 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
+
+  # Bloc
   flutter_bloc: ^9.1.1
   flutter_blue_plus: ^1.35.5
-  logger: ^2.6.0
+
+  # Immutable Data class
   freezed_annotation: ^3.0.0
+
+  # Json Serialization
   json_annotation: ^4.9.0
+
+  # Dependency Injection
+  injectable: ^2.5.0
+  get_it: ^8.0.3
+
+
+  # Utils
+  logger: ^2.6.0
   rxdart: ^0.28.0
 
 dev_dependencies:
@@ -22,9 +35,18 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+
+  # Code Generation
   build_runner: ^2.5.4
+
+  # Immutable Data class
   freezed: ^3.0.6
+
+  # Json Serialization
   json_serializable: ^6.9.5
+
+  # Dependency Injection
+  injectable_generator: ^2.7.0
 
 flutter:
 

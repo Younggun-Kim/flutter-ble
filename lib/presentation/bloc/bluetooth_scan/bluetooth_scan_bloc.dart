@@ -4,6 +4,7 @@ import 'package:flutter_ble/utils/utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'bluetooth_scan_bloc.freezed.dart';
 part 'bluetooth_scan_event.dart';
@@ -13,6 +14,7 @@ typedef BluetoothScanBlocProvider = BlocProvider<BluetoothScanBloc>;
 typedef BluetoothScanBlocBuilder =
     BlocBuilder<BluetoothScanBloc, BluetoothScanState>;
 
+@injectable
 class BluetoothScanBloc extends Bloc<BluetoothScanEvent, BluetoothScanState> {
   BluetoothScanBloc() : super(const BluetoothScanState()) {
     on<_ScanStarted>(_onScanStarted);
