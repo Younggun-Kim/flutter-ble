@@ -34,7 +34,7 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
 
   final BluetoothUseCase bluetoothUseCase;
   StreamSubscription<bool>? _permissionSubscription;
-  StreamSubscription<BluetoothConnectionState>? _connectionState;
+  StreamSubscription<bool>? _connectionState;
   StreamSubscription<BluetoothConnectionState>? _notifySubscription;
 
   @override
@@ -75,22 +75,24 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     final device = event.device;
 
     emit(state.copyWith(scannedDevice: device));
+    _subscribeToConnectionState(device);
 
-    // await device.connect(mtu: 512);
+    await bluetoothUseCase.connect(device);
   }
 
   Future<void> _onDeviceConnected(
     _DeviceConnected event,
     Emitter<BluetoothHomeState> emit,
   ) async {
-    // final connectedDevice = event.device;
-    //
-    // emit(state.copyWith(connectedDevice: connectedDevice));
-    //
-    // if (connectedDevice == null) return;
-    //
-    // List<BluetoothService> services = await connectedDevice.discoverServices();
-    //
+    final connectedDevice = event.device;
+
+    emit(state.copyWith(connectedDevice: connectedDevice));
+
+    if (connectedDevice == null) return;
+
+    await bluetoothUseCase.discoverServices(connectedDevice);
+
+    // TODO: 조회한 서비스를 기반으로 stream 기반의 통신 연결하기
     // for (var service in services) {
     //   for (var c in service.characteristics) {
     //     /// notify: true라면 값을 스트림으로 수신받기 가능
@@ -117,32 +119,24 @@ class BluetoothHomeBloc extends Bloc<BluetoothHomeEvent, BluetoothHomeState> {
     _DeviceAutoConnected event,
     Emitter<BluetoothHomeState> emit,
   ) async {
-    /// 저장된 디바이스 정보를 가져오기
-    final careSendRemoteId = DeviceIdentifier('D0:2E:AB:BB:B5:27');
-    BluetoothDevice device = BluetoothDevice(remoteId: careSendRemoteId);
-
+    /// TODO: 저장된 디바이스 정보를 가져오기
+    final device = DeviceEntity(remoteId: 'D0:2E:AB:BB:B5:27');
     _subscribeToConnectionState(device);
 
-    await device.disconnect();
-    await device.connect(autoConnect: true, mtu: null);
+    await bluetoothUseCase.autoConnect(device);
   }
 
-  void _subscribeToConnectionState(
-    BluetoothDevice device,
-  ) {
-    // _connectionState?.cancel();
-    // _connectionState = device.connectionState.listen((
-    //   BluetoothConnectionState state,
-    // ) {
-    //   if (state == BluetoothConnectionState.connected) {
-    //     add(
-    //       BluetoothHomeEvent.deviceConnected(
-    //         FlutterBluePlus.connectedDevices.first,
-    //       ),
-    //     );
-    //   } else {
-    //     add(BluetoothHomeEvent.deviceConnected(null));
-    //   }
-    // });
+  void _subscribeToConnectionState(DeviceEntity device) {
+    _connectionState?.cancel();
+    _connectionState = bluetoothUseCase.isConnected(device).listen((
+      bool isConnected,
+    ) {
+      if (isConnected) {
+        add(BluetoothHomeEvent.deviceConnected(device));
+      } else {
+        add(BluetoothHomeEvent.deviceConnected(null));
+      }
+    });
+    ;
   }
 }
