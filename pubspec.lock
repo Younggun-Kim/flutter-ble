@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.5.1"
+  ansicolor:
+    dependency: transitive
+    description:
+      name: ansicolor
+      sha256: "50e982d500bc863e1d703448afdbf9e5a72eb48840a4f766fa361ffd6877055f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   args:
     dependency: transitive
     description:
@@ -669,6 +677,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  talker:
+    dependency: transitive
+    description:
+      name: talker
+      sha256: cf02a0d294701c76022f32bc8eb7e6f943953eb17fa1f8aaee56af210848134b
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.1"
+  talker_bloc_logger:
+    dependency: "direct main"
+    description:
+      name: talker_bloc_logger
+      sha256: fce90b694728bb1e5cba831047eb051b38e99900256a66725b8057b3452e6730
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.1"
+  talker_logger:
+    dependency: transitive
+    description:
+      name: talker_logger
+      sha256: f1755d517e5ca8b119b65ad2fc1079746a8d03bd565e75d6b9d5aedf5c1d5b15
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.1"
   term_glyph:
     dependency: transitive
     description:

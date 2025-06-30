@@ -13,6 +13,9 @@ dependencies:
 
   # Bloc
   flutter_bloc: ^9.1.1
+  talker_bloc_logger: ^4.9.1
+
+  # Bluetooth
   flutter_blue_plus: ^1.35.5
 
   # Immutable Data class
