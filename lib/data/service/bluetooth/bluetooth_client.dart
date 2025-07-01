@@ -83,7 +83,7 @@ class BluetoothClientImpl implements BluetoothClient {
 
   @override
   Future<void> autoConnect({required BluetoothDevice device}) async {
-    await device.connect(autoConnect: true);
+    await device.connect(autoConnect: true, mtu: null);
   }
 
   @override

@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ble/domain/domain.dart';
+import 'package:flutter_ble/presentation/ui/ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ble/core/core.dart';
 import 'package:flutter_ble/presentation/bloc/bloc.dart';
-
-import 'bluetooth_scan_dialog.dart';
 
 class BluetoothHomeScreen extends StatelessWidget {
   const BluetoothHomeScreen({super.key});
@@ -22,6 +20,9 @@ class BluetoothHomeScreen extends StatelessWidget {
         ),
         BluetoothScanBlocProvider(
           create: (context) => getIt<BluetoothScanBloc>(),
+        ),
+        BluetoothCommunicationBlocProvider(
+          create: (context) => getIt<BluetoothCommunicationBloc>(),
         ),
       ],
       child: BluetoothHomeBlocBuilder(
@@ -86,7 +87,12 @@ class BluetoothHomeScreen extends StatelessWidget {
                         ),
                         trailing: ElevatedButton(
                           child: Text('통신하기'),
-                          onPressed: () {},
+                          onPressed: () {
+                            BluetoothCommunicationDialog.showBottomSheet(
+                              context,
+                              service.characteristics,
+                            );
+                          },
                         ),
                       );
                     },

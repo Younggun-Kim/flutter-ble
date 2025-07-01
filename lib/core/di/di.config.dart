@@ -16,6 +16,8 @@ import 'package:flutter_ble/data/service/bluetooth/bluetooth_client.dart'
 import 'package:flutter_ble/data/service/service.dart' as _i459;
 import 'package:flutter_ble/domain/domain.dart' as _i346;
 import 'package:flutter_ble/domain/use_case/bluetooth_use_case.dart' as _i832;
+import 'package:flutter_ble/presentation/bloc/bluetooth_communication/bluetooth_communication_bloc.dart'
+    as _i441;
 import 'package:flutter_ble/presentation/bloc/bluetooth_home/bluetooth_home_bloc.dart'
     as _i859;
 import 'package:flutter_ble/presentation/bloc/bluetooth_scan/bluetooth_scan_bloc.dart'
@@ -30,6 +32,9 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.factory<_i441.BluetoothCommunicationBloc>(
+      () => _i441.BluetoothCommunicationBloc(),
+    );
     gh.lazySingleton<_i213.BluetoothClient>(() => _i213.BluetoothClientImpl());
     gh.lazySingleton<_i346.BluetoothRepository>(
       () => _i492.BluetoothRepositoryImpl(
