@@ -94,4 +94,24 @@ class BluetoothRepositoryImpl implements BluetoothRepository {
 
     return await bluetoothClient.discoverServices(device: bluetoothDevice);
   }
+
+  /// Characteristic 메시지 스트림 설정
+  @override
+  Future<Stream<List<int>>?> getCharacteristicLastValue(
+    BluetoothCharacteristic characteristic,
+  ) async {
+    return await bluetoothClient.getCharacteristicLastValue(characteristic);
+  }
+
+  /// Characteristic에 메시지 보내기
+  @override
+  Future<void> writeMessage({
+    required BluetoothCharacteristic characteristic,
+    required List<int> message,
+  }) async {
+    await bluetoothClient.writeMessage(
+      characteristic: characteristic,
+      message: message,
+    );
+  }
 }

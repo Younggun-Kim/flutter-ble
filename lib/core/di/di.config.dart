@@ -32,9 +32,6 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.factory<_i441.BluetoothCommunicationBloc>(
-      () => _i441.BluetoothCommunicationBloc(),
-    );
     gh.lazySingleton<_i213.BluetoothClient>(() => _i213.BluetoothClientImpl());
     gh.lazySingleton<_i346.BluetoothRepository>(
       () => _i492.BluetoothRepositoryImpl(
@@ -53,6 +50,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1012.BluetoothScanBloc>(
       () => _i1012.BluetoothScanBloc(
+        bluetoothUseCase: gh<_i346.BluetoothUseCase>(),
+      ),
+    );
+    gh.factory<_i441.BluetoothCommunicationBloc>(
+      () => _i441.BluetoothCommunicationBloc(
         bluetoothUseCase: gh<_i346.BluetoothUseCase>(),
       ),
     );

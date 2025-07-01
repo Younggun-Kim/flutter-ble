@@ -27,6 +27,17 @@ abstract interface class BluetoothUseCase {
 
   /// 등록된 서비스 조회
   Future<List<BluetoothService>> discoverServices(DeviceEntity device);
+
+  /// Characteristic 메시지 스트림 설정
+  Future<Stream<List<int>>?> getCharacteristicLastValue(
+    BluetoothCharacteristic characteristic,
+  );
+
+  /// Characteristic에 메시지 보내기
+  Future<void> writeMessage({
+    required BluetoothCharacteristic characteristic,
+    required List<int> message,
+  });
 }
 
 @Injectable(as: BluetoothUseCase)
@@ -91,5 +102,27 @@ class BluetoothUseCaseImpl implements BluetoothUseCase {
   @override
   Future<List<BluetoothService>> discoverServices(DeviceEntity device) async {
     return await bluetoothRepository.discoverServices(device: device);
+  }
+
+  /// Characteristic 메시지 스트림 설정
+  @override
+  Future<Stream<List<int>>?> getCharacteristicLastValue(
+    BluetoothCharacteristic characteristic,
+  ) async {
+    return await bluetoothRepository.getCharacteristicLastValue(
+      characteristic,
+    );
+  }
+
+  /// Characteristic에 메시지 보내기
+  @override
+  Future<void> writeMessage({
+    required BluetoothCharacteristic characteristic,
+    required List<int> message,
+  }) async {
+    await bluetoothRepository.writeMessage(
+      characteristic: characteristic,
+      message: message,
+    );
   }
 }

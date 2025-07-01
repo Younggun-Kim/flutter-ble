@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
@@ -44,14 +45,10 @@ class BluetoothCommunicationDialog extends StatelessWidget {
           width: double.infinity,
           height: 700,
           padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('연결된 기기와 대화하기'),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: Text('연결된 기기와 대화하기')),
+              SliverList.builder(
                 itemCount: state.characteristics.length,
                 itemBuilder: (context, index) {
                   final characteristic = state.characteristics[index];
@@ -70,6 +67,28 @@ class BluetoothCommunicationDialog extends StatelessWidget {
                     ),
                   );
                 },
+              ),
+              SliverToBoxAdapter(child: Text('메시지 목록')),
+              SliverList.builder(
+                itemCount: state.message.length,
+                itemBuilder: (context, index) {
+                  final message = state.message[index];
+
+                  return ListTile(
+                    title: Text(message),
+                  );
+                },
+              ),
+              SliverToBoxAdapter(
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  onChanged: (String text) {
+                    context.read<BluetoothCommunicationBloc>().add(
+                      BluetoothCommunicationEvent.writeMessage(message: text),
+                    );
+                  },
+                ),
               ),
             ],
           ),

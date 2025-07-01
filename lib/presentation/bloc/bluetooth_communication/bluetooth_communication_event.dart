@@ -9,4 +9,16 @@ sealed class BluetoothCommunicationEvent with _$BluetoothCommunicationEvent {
   const factory BluetoothCommunicationEvent.subscribed(
     BluetoothCharacteristic characteristic,
   ) = _Subscribed;
+
+  const factory BluetoothCommunicationEvent.disposed() = _Disposed;
+
+  const factory BluetoothCommunicationEvent.addMessage(
+    String message,
+  ) = _AddMessage;
+
+  const factory BluetoothCommunicationEvent.clearMessage() = _ClearMessage;
+
+  const factory BluetoothCommunicationEvent.writeMessage({
+    required String message,
+  }) = _WriteMessage;
 }

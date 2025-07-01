@@ -33,4 +33,15 @@ abstract interface class BluetoothRepository {
   Future<List<BluetoothService>> discoverServices({
     required DeviceEntity device,
   });
+
+  /// Characteristic 메시지 스트림 설정
+  Future<Stream<List<int>>?> getCharacteristicLastValue(
+    BluetoothCharacteristic characteristic,
+  );
+
+  /// Characteristic에 메시지 보내기
+  Future<void> writeMessage({
+    required BluetoothCharacteristic characteristic,
+    required List<int> message,
+  });
 }

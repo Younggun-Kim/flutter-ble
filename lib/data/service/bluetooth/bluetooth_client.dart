@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_ble/utils/logger.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 
@@ -36,6 +37,17 @@ abstract interface class BluetoothClient {
   Future<List<BluetoothService>> discoverServices({
     required BluetoothDevice device,
   });
+
+  /// Characteristic 메시지 스트림 설정
+  Future<Stream<List<int>>?> getCharacteristicLastValue(
+    BluetoothCharacteristic characteristic,
+  );
+
+  /// Characteristic에 메시지 보내기
+  Future<void> writeMessage({
+    required BluetoothCharacteristic characteristic,
+    required List<int> message,
+  });
 }
 
 @LazySingleton(as: BluetoothClient)
@@ -59,7 +71,7 @@ class BluetoothClientImpl implements BluetoothClient {
     final stream = FlutterBluePlus.onScanResults;
 
     FlutterBluePlus.startScan(
-      withNames: ['Glucose002'],
+      withNames: ['Glucose'],
       timeout: Duration(seconds: 10),
     );
 
@@ -106,5 +118,33 @@ class BluetoothClientImpl implements BluetoothClient {
     required BluetoothDevice device,
   }) async {
     return await device.discoverServices();
+  }
+
+  /// Characteristic 메시지 스트림 설정
+  @override
+  Future<Stream<List<int>>?> getCharacteristicLastValue(
+    BluetoothCharacteristic characteristic,
+  ) async {
+    try {
+      /// Stream으로 받기 위한 설정 - characteristic이 Notify타입을 지원해야 한다.
+      await characteristic.setNotifyValue(true);
+
+      /// 기록된 마지막 값 읽어오기
+      await characteristic.read();
+
+      return characteristic.lastValueStream;
+    } catch (e) {
+      logger.e(e);
+      return null;
+    }
+  }
+
+  /// Characteristic에 메시지 보내기
+  @override
+  Future<void> writeMessage({
+    required BluetoothCharacteristic characteristic,
+    required List<int> message,
+  }) async {
+    await characteristic.write(message);
   }
 }
